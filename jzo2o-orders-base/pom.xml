@@ -29,10 +29,11 @@
             <groupId>com.jzo2o</groupId>
             <artifactId>jzo2o-redis</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.jzo2o</groupId>-->
-<!--            <artifactId>jzo2o-shardingsphere-jdbc</artifactId>-->
-<!--        </dependency>-->
+<!--        分库分表-->
+        <dependency>
+            <groupId>com.jzo2o</groupId>
+            <artifactId>jzo2o-shardingsphere-jdbc</artifactId>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.jzo2o</groupId>-->
 <!--            <artifactId>jzo2o-api</artifactId>-->
@@ -47,11 +48,12 @@
             <groupId>com.jzo2o</groupId>
             <artifactId>jzo2o-canal-sync</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.jzo2o</groupId>-->
-<!--            <artifactId>jzo2o-statemachine</artifactId>-->
-<!--            <version>1.0-SNAPSHOT</version>-->
-<!--        </dependency>-->
+<!--        状态机依赖-->
+        <dependency>
+            <groupId>com.jzo2o</groupId>
+            <artifactId>jzo2o-statemachine</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--seata-->
 <!--        <dependency>-->
 <!--            <groupId>com.alibaba.cloud</groupId>-->

@@ -1,11 +1,9 @@
 package com.jzo2o.orders.manager.controller.consumer;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.jzo2o.api.market.dto.response.AvailableCouponsResDTO;
 import com.jzo2o.api.orders.dto.request.OrderCancelReqDTO;
 import com.jzo2o.api.orders.dto.response.OrderResDTO;
 import com.jzo2o.api.orders.dto.response.OrderSimpleResDTO;
-import com.jzo2o.common.model.CurrentUserInfo;
+import com.jzo2o.common.utils.BeanUtils;
 import com.jzo2o.mvc.utils.UserContext;
 import com.jzo2o.orders.manager.model.dto.OrderCancelDTO;
 import com.jzo2o.orders.manager.model.dto.request.OrdersPayReqDTO;
@@ -34,6 +32,9 @@ public class ConsumerOrdersController {
     @Resource
     private IOrdersManagerService ordersManagerService;
 
+    @Resource
+    private IOrdersCreateService ordersCreateService;
+
 
     @GetMapping("/{id}")
     @ApiOperation("根据订单id查询")
@@ -53,4 +54,66 @@ public class ConsumerOrdersController {
                                                      @RequestParam(value = "sortBy", required = false) Long sortBy) {
         return ordersManagerService.consumerQueryList(UserContext.currentUserId(), ordersStatus, sortBy);
     }
+
+    /**
+     * 下单
+     * @param placeOrderReqDTO 下单信息
+     * @return 订单号
+     */
+    @ApiOperation("下单接口")
+    @PostMapping("/place")
+    public PlaceOrderResDTO place(@RequestBody PlaceOrderReqDTO placeOrderReqDTO) {
+        PlaceOrderResDTO place = ordersCreateService.place(placeOrderReqDTO);
+        return place;
+    }
+
+
+    /**
+     * 订单支付
+     * @param id 为订单id
+     * @param ordersPayReqDTO 订单的支付渠道
+     * @return 订单支付结果
+     */
+    @PutMapping("/pay/{id}")
+    @ApiOperation("订单支付")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "订单id", required = true, dataTypeClass = Long.class)
+    })
+    public OrdersPayResDTO pay(@PathVariable("id") Long id, @RequestBody OrdersPayReqDTO ordersPayReqDTO) {
+        OrdersPayResDTO pay = ordersCreateService.pay(id, ordersPayReqDTO);
+        return pay;
+    }
+
+    /**
+     * 查询订单支付结果
+     * @param id 为订单id
+     */
+    @GetMapping("/pay/{id}/result")
+    @ApiOperation("查询订单支付结果")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "订单id", required = true, dataTypeClass = Long.class)
+    })
+    public OrdersPayResDTO payResult(@PathVariable("id") Long id) {
+        OrdersPayResDTO payResultFromTradServer = ordersCreateService.getPayResultFromTradServer(id);
+
+        return payResultFromTradServer;
+    }
+
+    /**
+     * 取消订单
+     * @param orderCancelReqDTO 为订单取消信息
+     */
+    @PutMapping("/cancel")
+    @ApiOperation("取消订单")
+    public void cancel(@RequestBody OrderCancelReqDTO orderCancelReqDTO) {
+        OrderCancelDTO orderCancelDTO = BeanUtils.copyBean(orderCancelReqDTO, OrderCancelDTO.class);
+        orderCancelDTO.setCurrentUserId(UserContext.currentUserId());
+        orderCancelDTO.setCurrentUserName(UserContext.currentUser().getName());
+        orderCancelDTO.setCurrentUserType(UserContext.currentUser().getUserType());
+        ordersManagerService.cancel(orderCancelDTO);
+
+
+    }
+
+
 }
