@@ -1,5 +1,6 @@
 package com.jzo2o.orders.manager.controller.consumer;
 
+import com.jzo2o.api.market.dto.response.AvailableCouponsResDTO;
 import com.jzo2o.api.orders.dto.request.OrderCancelReqDTO;
 import com.jzo2o.api.orders.dto.response.OrderResDTO;
 import com.jzo2o.api.orders.dto.response.OrderSimpleResDTO;
@@ -44,6 +45,8 @@ public class ConsumerOrdersController {
     public OrderResDTO detail(@PathVariable("id") Long id) {
         return ordersManagerService.getDetail(id);
     }
+
+
     @GetMapping("/consumerQueryList")
     @ApiOperation("订单滚动分页查询")
     @ApiImplicitParams({
@@ -55,8 +58,10 @@ public class ConsumerOrdersController {
         return ordersManagerService.consumerQueryList(UserContext.currentUserId(), ordersStatus, sortBy);
     }
 
+
     /**
      * 下单
+     *
      * @param placeOrderReqDTO 下单信息
      * @return 订单号
      */
@@ -70,7 +75,8 @@ public class ConsumerOrdersController {
 
     /**
      * 订单支付
-     * @param id 为订单id
+     *
+     * @param id              为订单id
      * @param ordersPayReqDTO 订单的支付渠道
      * @return 订单支付结果
      */
@@ -86,6 +92,7 @@ public class ConsumerOrdersController {
 
     /**
      * 查询订单支付结果
+     *
      * @param id 为订单id
      */
     @GetMapping("/pay/{id}/result")
@@ -101,6 +108,7 @@ public class ConsumerOrdersController {
 
     /**
      * 取消订单
+     *
      * @param orderCancelReqDTO 为订单取消信息
      */
     @PutMapping("/cancel")
@@ -113,6 +121,17 @@ public class ConsumerOrdersController {
         ordersManagerService.cancel(orderCancelDTO);
 
 
+    }
+
+    @GetMapping("/getAvailableCoupons")
+    @ApiOperation("获取可用优惠券")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "serveId", value = "服务id", required = true, dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "purNum", value = "购买数量，默认1", required = false, dataTypeClass = Long.class)
+    })
+    public List<AvailableCouponsResDTO> getCoupons(@RequestParam(value = "serveId", required = true) Long serveId,
+                                                   @RequestParam(value = "purNum", required = false, defaultValue = "1") Integer purNum) {
+        return ordersCreateService.getAvailableCoupons(serveId, purNum);
     }
 
 

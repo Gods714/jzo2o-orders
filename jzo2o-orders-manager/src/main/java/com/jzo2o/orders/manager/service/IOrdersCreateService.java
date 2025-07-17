@@ -32,6 +32,16 @@ public interface IOrdersCreateService extends IService<Orders> {
 
 
     /**
+     * 获取可用优惠券
+     *
+     * @param serveId 服务id
+     * @param purNum  购买数量
+     * @return 可用优惠券列表
+     */
+    List<AvailableCouponsResDTO> getAvailableCoupons(Long serveId, Integer purNum);
+
+
+    /**
      * 下单接口
      *
      * @param placeOrderReqDTO 下单请求参数
